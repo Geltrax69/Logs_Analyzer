@@ -42,7 +42,6 @@ In school management systems, security incidents usually hide inside raw logs. T
 
 ## UI Preview / Motion
 
-> You can keep these GIFs or replace them with your own recorded product GIFs later.
 
 ![Cyber Dashboard](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExazdnd3MzaHdzcWw1cmE3M3RhN2w4c2h3ZzJjM3N2ZnM2d3c5OHQwNyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0HlNaQ6gWfllcjDO/giphy.gif)
 
@@ -118,7 +117,7 @@ http://localhost:5173
 
 ## Backend Integration
 
-This UI is designed to work with your `school-backend` logs APIs.
+This UI is designed to work with your `educonnect.me` logs APIs.
 
 Expected behavior from backend:
 - Return real login/search/security events (not mock-only)
