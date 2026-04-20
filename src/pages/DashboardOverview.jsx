@@ -6,6 +6,7 @@ const DashboardOverview = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [statsNow] = useState(() => Date.now());
 
   const loadOverview = async () => {
     try {
@@ -13,7 +14,7 @@ const DashboardOverview = () => {
       setError('');
       const resp = await fetchLogsPaged({ page: 1, limit: 120 });
       setLogs(Array.isArray(resp?.data) ? resp.data : []);
-    } catch (e) {
+    } catch {
       setError('Unable to load real overview data from backend.');
       setLogs([]);
     } finally {
@@ -22,12 +23,13 @@ const DashboardOverview = () => {
   };
 
   useEffect(() => {
+    // Initial backend fetch for dashboard summary cards.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadOverview();
   }, []);
 
   const stats = useMemo(() => {
-    const now = Date.now();
-    const oneDayAgo = now - 24 * 60 * 60 * 1000;
+    const oneDayAgo = statsNow - 24 * 60 * 60 * 1000;
 
     const last24h = logs.filter((l) => new Date(l.createdAt || l.timestamp || 0).getTime() >= oneDayAgo);
     const critical = logs.filter(
@@ -42,7 +44,7 @@ const DashboardOverview = () => {
       failed: failedLogins.length,
       activeNodes: uniqueIps.size
     };
-  }, [logs]);
+  }, [logs, statsNow]);
 
   const getStatusMeta = (row) => {
     const raw = String(row?.status || row?.level || '').trim().toUpperCase();

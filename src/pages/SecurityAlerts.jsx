@@ -5,6 +5,40 @@ import { AlertTriangle, RefreshCw, X } from 'lucide-react';
 const PAGE_SIZE = 30;
 const ALERT_DISMISSED_AT_KEY = 'security_alerts_dismissed_at';
 
+const normalizeText = (value) => String(value || '').trim().toLowerCase();
+
+const SQL_PATTERN = /('|--|;|\/\*|\*\/|\b(or|and)\b\s+\d+\s*=\s*\d+|\b(union|select|insert|update|delete|drop|alter|truncate|exec|sleep|benchmark)\b|={2,})/i;
+
+const getLogAction = (log) => normalizeText(`${log?.eventType || ''} ${log?.action || ''} ${log?.type || ''}`);
+
+const isLoginEvent = (log) => {
+  const action = getLogAction(log);
+  return action.includes('login') && !action.includes('failed') && !action.includes('fail');
+};
+
+const isFailedLogin = (log) => {
+  const action = getLogAction(log);
+  const status = normalizeText(log?.status || log?.level);
+  return action.includes('failed_login') || action.includes('login_failed') || (action.includes('login') && status.includes('fail'));
+};
+
+const isSqlAlert = (log) => {
+  const metadata = log?.metadata || {};
+  const status = normalizeText(log?.status || log?.level);
+  const scanText = [
+    log?.eventType,
+    log?.action,
+    log?.resource,
+    log?.endpoint,
+    log?.details,
+    log?.errorMessage,
+    metadata.searchText,
+    metadata.path
+  ].filter(Boolean).join(' ');
+
+  return getLogAction(log).includes('sql_injection') || SQL_PATTERN.test(scanText) || (status.includes('warn') && SQL_PATTERN.test(scanText));
+};
+
 const SecurityAlerts = () => {
   const [logs, setLogs] = useState([]);
   const [popupAlerts, setPopupAlerts] = useState([]);
@@ -33,7 +67,8 @@ const SecurityAlerts = () => {
       setPage(requestedPage);
 
       const criticalAlerts = logsArray.filter((log) =>
-        ['sql_injection_alert', 'bruteforce_alert'].includes(log.eventType) ||
+        isSqlAlert(log) ||
+        getLogAction(log).includes('bruteforce') ||
         String(log.status || '').toUpperCase() === 'WARNING'
       );
 
@@ -46,7 +81,7 @@ const SecurityAlerts = () => {
 
       setPopupAlerts(newCriticalAlerts.slice(0, 5));
       setShowPopup(newCriticalAlerts.length > 0);
-    } catch (err) {
+    } catch {
       setError('Failed to fetch real security logs from backend. Check backend URL/CORS and /api/audit endpoint.');
     } finally {
       setLoading(false);
@@ -54,6 +89,8 @@ const SecurityAlerts = () => {
   };
 
   useEffect(() => {
+    // Initial backend fetch for the security log table.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData(1, filters);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -84,9 +121,9 @@ const SecurityAlerts = () => {
 
   const metrics = useMemo(() => {
     const total = logs.length;
-    const loginCount = logs.filter((l) => l.eventType === 'login' || l.action === 'LOGIN_SUCCESS').length;
-    const failedCount = logs.filter((l) => l.eventType === 'failed_login').length;
-    const sqliCount = logs.filter((l) => l.eventType === 'sql_injection_alert').length;
+    const loginCount = logs.filter(isLoginEvent).length;
+    const failedCount = logs.filter(isFailedLogin).length;
+    const sqliCount = logs.filter(isSqlAlert).length;
     return { total, loginCount, failedCount, sqliCount };
   }, [logs]);
 
