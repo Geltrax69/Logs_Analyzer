@@ -13,10 +13,10 @@ export const fetchLogs = async () => {
   }
 };
 
-export const fetchLogsPaged = async ({ page = 1, limit = 30, eventType = '', schoolUID = '', search = '', userRole = '' } = {}) => {
+export const fetchLogsPaged = async ({ page = 1, limit = 30, eventType = '', schoolUID = '', search = '', userRole = '', action = '', logCategory = '' } = {}) => {
   try {
     const response = await axios.get(`${API_URL}/api/audit`, {
-      params: { page, limit, eventType, schoolUID, search, userRole }
+      params: { page, limit, eventType, schoolUID, search, userRole, action, logCategory }
     });
     return response.data;
   } catch (error) {
