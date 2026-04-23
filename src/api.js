@@ -13,14 +13,24 @@ export const fetchLogs = async () => {
   }
 };
 
-export const fetchLogsPaged = async ({ page = 1, limit = 30, eventType = '', schoolUID = '', search = '' } = {}) => {
+export const fetchLogsPaged = async ({ page = 1, limit = 30, eventType = '', schoolUID = '', search = '', userRole = '' } = {}) => {
   try {
     const response = await axios.get(`${API_URL}/api/audit`, {
-      params: { page, limit, eventType, schoolUID, search }
+      params: { page, limit, eventType, schoolUID, search, userRole }
     });
     return response.data;
   } catch (error) {
     console.error('Error fetching paged logs:', error);
+    throw error;
+  }
+};
+
+export const fetchAuditSchools = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/audit/schools`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching audit schools:', error);
     throw error;
   }
 };

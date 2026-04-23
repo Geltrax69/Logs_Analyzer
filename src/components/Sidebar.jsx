@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, ShieldAlert, Activity, Users, Settings } from 'lucide-react';
+import { LayoutDashboard, ShieldAlert, Building2, Users, Settings } from 'lucide-react';
 
 const Sidebar = () => {
   return (
@@ -19,10 +19,10 @@ const Sidebar = () => {
           <ShieldAlert size={20} />
           Security Alerts
         </NavLink>
-        <div className="nav-item" style={{opacity: 0.5, cursor: 'not-allowed'}}>
-          <Activity size={20} />
-          Network Traffic
-        </div>
+        <NavLink to="/schools" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <Building2 size={20} />
+          Schools
+        </NavLink>
         <div className="nav-item" style={{opacity: 0.5, cursor: 'not-allowed'}}>
           <Users size={20} />
           User Analytics

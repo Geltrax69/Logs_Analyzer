@@ -12,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<DashboardOverview />} />
           <Route path="/alerts" element={<SecurityAlerts />} />
+          <Route path="/schools" element={<SecurityAlerts />} />
         </Routes>
       </main>
     </div>
