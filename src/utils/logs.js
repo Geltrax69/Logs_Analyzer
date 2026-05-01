@@ -58,6 +58,14 @@ export const getEventLabel = (log) => {
     return 'Parent Login Failed';
   }
   if (eventType === 'search_activity') return 'Search Activity';
+  if (eventType === 'teacher_student_photo_upload') return 'Student ID Photo Upload';
+  if (eventType === 'teacher_homework_create') return 'Homework Created';
+  if (eventType === 'teacher_attendance_mark') return 'Attendance Marked';
+  if (eventType === 'teacher_announcement_create') return 'Announcement Created';
+  if (eventType === 'teacher_test_create') return 'Test Created';
+  if (eventType === 'teacher_test_view') return 'Tests Viewed';
+  if (eventType === 'teacher_result_submit') return 'Results Submitted';
+  if (eventType === 'teacher_result_view') return 'Results Viewed';
   if (eventType === 'sql_injection_alert') return 'SQL Injection Alert';
   if (eventType === 'bruteforce_alert') return 'Bruteforce Alert';
   if (action === 'login_success') return 'Admin Login';
@@ -71,6 +79,12 @@ export const getReasonText = (log) => {
   if (log?.metadata?.searchText) return `Searched: ${log.metadata.searchText}`;
   if (log?.failureReason && log.failureReason !== '-') return log.failureReason;
   if (log?.errorMessage) return log.errorMessage;
+  if (log?.details?.summary) return log.details.summary;
+  if (log?.details?.classNumber && log?.details?.section) {
+    const stream = log.details.stream ? `-${log.details.stream}` : '';
+    const subject = log.details.subject ? `, ${log.details.subject}` : '';
+    return `Class ${log.details.classNumber}-${log.details.section}${stream}${subject}`;
+  }
   if (log?.details?.reason) return log.details.reason;
   if (log?.metadata?.issueReason) return log.metadata.issueReason;
   if (log?.details?.path) return log.details.path;
