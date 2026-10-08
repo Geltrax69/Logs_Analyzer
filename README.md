@@ -1,143 +1,85 @@
-<div align="center">
-
 # SIEM Logs Analyzer
-### Real-time School Security Logs & Alert Dashboard
 
-[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Axios](https://img.shields.io/badge/Axios-HTTP-5A29E4?style=for-the-badge&logo=axios&logoColor=white)](https://axios-http.com/)
-[![License](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)](#)
+> ## Status: 🟡 In Progress
+>
+> <progress value="75" max="100"></progress>
+> **Progress: 75%** — Dashboard UI complete and builds; depends on an external logs API
 
-</div>
+<p align="center">
+  <img src="banner.webp" alt="Logs Analyzer banner" width="100%" />
+</p>
 
----
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat&logo=vite)](https://vite.dev/)
+[![Axios](https://img.shields.io/badge/Axios-HTTP-5A29E4?style=flat)](https://axios-http.com/)
 
-## What This Project Does
+## What it is
 
-`SIEM Logs Analyzer` is a frontend analytics dashboard connected to `school-backend` logs. It helps monitor login/security activity across schools in one place.
+A frontend analytics dashboard for monitoring school security/audit logs in one place. It connects to a school-backend API and shows login activity, security alerts, and per-school log breakdowns. Built for school IT admins who need a single view over login/security events across multiple schools.
 
-It shows:
-- School name (not just school UID)
-- Login time and source IP
-- Failed login activity
-- SQL injection-like input attempts
-- Search activity entered by users
-- Real-time/polled security alert popups
-- Severity-based status badges (success, warning, failure, etc.)
-- Filters + pagination for log browsing
+## What works (verified)
 
----
+- ✅ Project builds cleanly — `npm run build` succeeds (verified)
+- ✅ Three routed pages: Dashboard Overview, Security Alerts, School Logs (verified by reading `App.jsx` routes)
+- ✅ API layer with paged log fetching and filters (event type, school, role, action, category) — `src/api.js` (verified by code read)
+- ✅ Sidebar navigation layout with main content area (verified by code read)
 
-## Why This Is Necessary
+## Tech stack
 
-In school management systems, security incidents usually hide inside raw logs. This dashboard makes those logs actionable:
+| Layer | Tech |
+|---|---|
+| Framework | React 19 + Vite 8 |
+| Routing | react-router-dom v7 |
+| HTTP | Axios |
+| Icons | lucide-react |
+| Deploy | Vercel (`vercel.json` present) |
 
-- Detects suspicious behavior quickly
-- Helps admins trace who logged in, from where, and when
-- Surfaces brute-force and injection attempts early
-- Improves incident response and audit visibility
-- Reduces manual effort of checking backend logs line by line
-
----
-
-## UI Preview / Motion
-
-
-![Cyber Dashboard](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExazdnd3MzaHdzcWw1cmE3M3RhN2w4c2h3ZzJjM3N2ZnM2d3c5OHQwNyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0HlNaQ6gWfllcjDO/giphy.gif)
-
-![Security Monitoring](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHVoMGl2dnR6MGg4dHRsc2J4cTVzNXE2aHBmMTM4M2h3ZjN2eGx3YiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26tn33aiTi1jkl6H6/giphy.gif)
-
----
-
-## Key Features
-
-### 1. Login Observability
-- Captures school login events with timestamp + IP
-- Displays resolved school name where available
-
-### 2. Security Alerts Engine
-- Triggers warnings for potential SQL injection patterns
-- Detects repeated failed login attempts (threshold-based alerts)
-- Popup alert panel for immediate visibility
-
-### 3. Search Audit Logging
-- Stores and displays what user entered in search fields
-- Flags suspicious search payloads (e.g., SQL-like symbols/patterns)
-
-### 4. Better Log Navigation
-- Filter by event/school
-- Paginated records for large datasets
-- Status colors for faster scanning
-
----
-
-## Tech Stack Used
-
-- **React 19**: UI rendering and component-based architecture
-- **Vite 8**: fast development/build tooling
-- **React Router DOM 7**: page-level navigation (`/`, `/alerts`, etc.)
-- **Axios**: API communication with backend logs service
-- **Lucide React**: icon system
-- **ESLint 9**: code quality and consistency
-
----
-
-## Project Structure
-
-```bash
-Logs/
-├── src/
-│   ├── pages/
-│   │   ├── DashboardOverview.jsx
-│   │   └── SecurityAlerts.jsx
-│   ├── components/
-│   ├── services/
-│   └── main.jsx
-├── public/
-├── package.json
-└── README.md
-```
-
----
-
-## Run Locally
+## How to run
 
 ```bash
 npm install
-npm run dev
+npm run dev      # dev server → http://localhost:5173
+npm run build    # production build → dist/
 ```
 
-App runs on Vite dev server (usually):
+Configure the backend via `.env`:
 
-```bash
-http://localhost:5173
+```
+VITE_API_URL=https://school-backend-eysq.onrender.com
+VITE_LOGS_API_ENDPOINT=/api/logs
+```
+
+> The app needs the school-backend API (`/api/audit`, `/api/audit/schools`) to be reachable, otherwise the pages show fetch errors.
+
+## Screenshots
+
+No screenshots in the repo. The banner above is the visual. The UI is a dark sidebar + dashboard layout.
+
+## What you can add more
+
+- [ ] Fallback/demo mode with mock log data when the API is unreachable — makes the dashboard usable offline
+- [ ] Real-time log streaming (WebSocket/SSE) for the "real-time" claim in the header
+- [ ] Alert rules engine — let admins define thresholds (e.g. N failed logins) instead of only viewing
+- [ ] Export logs to CSV/PDF for compliance reporting
+- [ ] Auth on the dashboard itself (the API is currently called without auth headers)
+- [ ] Tests — no test files exist yet
+
+## Project structure
+
+```
+src/
+├── App.jsx               # Routes: /, /alerts, /schools
+├── main.jsx              # Entry point
+├── api.js                # Axios calls to /api/audit*
+├── components/
+│   └── Sidebar.jsx       # Nav sidebar
+├── pages/
+│   ├── DashboardOverview.jsx
+│   ├── SecurityAlerts.jsx
+│   └── SchoolLogs.jsx
+└── utils/
+    └── logs.js           # Log helpers
 ```
 
 ---
-
-## Backend Integration
-
-This UI is designed to work with your `educonnect.me` logs APIs.
-
-Expected behavior from backend:
-- Return real login/search/security events (not mock-only)
-- Include school metadata to resolve UID -> school name
-- Emit/serve alert-worthy events (failed-login threshold, SQL patterns)
-
----
-
-## Recommended Next Enhancements
-
-- Persist dismissed popup alerts per user/session
-- Add alert acknowledgment workflow
-- Add export (CSV/PDF) for filtered incidents
-- Add role-based alert visibility (admin/super-admin/security)
-- Add geo-IP enrichment for suspicious IPs
-
----
-
-## Author Notes
-
-Built for school security visibility and practical SOC-like monitoring in education environments.
-
-If you want, I can also generate a second **premium-style README theme** (more animated, glassmorphism visuals, custom badges, architecture diagram) for A/B comparison.
+*README written after code audit on 2026-10-08.*
