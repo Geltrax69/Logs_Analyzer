@@ -13,6 +13,15 @@
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat&logo=vite)](https://vite.dev/)
 [![Axios](https://img.shields.io/badge/Axios-HTTP-5A29E4?style=flat)](https://axios-http.com/)
 
+## Screenshots
+
+<p align="center">
+  <img src="./screenshot-ui.png" alt="Logs_Analyzer UI" width="100%" />
+  <br />
+  <em>SIEM analytics dashboard.</em>
+</p>
+
+
 ## What it is
 
 A frontend analytics dashboard for monitoring school security/audit logs in one place. It connects to a school-backend API and shows login activity, security alerts, and per-school log breakdowns. Built for school IT admins who need a single view over login/security events across multiple schools.
